@@ -1,26 +1,85 @@
 
 
-import  { useState } from 'react';
+//-----minha versão abaixo----
+
+// import  { useState } from 'react';
+
+
+// function App(){
+
+//   const [name, setName] = useState('');
+//   const [quant, setQuant] = useState ([]);
+
+//   function submit (e){
+//     e.preventDefault();
+//     setName('');
+//     setQuant([...quant, name]);
+//   }
+
+//   return(
+//     <div>
+//      <form onSubmit={submit}>
+
+//       <label >Nome</label><br/>
+//       <input 
+//       placeholder='Nome'
+//       value={name}
+//       onChange={(e) => setName (e.target.value)}
+//       /><br/>
+
+//       <label >Quantidade</label><br/>
+//       <input placeholder='Quantidade'/><br/>
+
+//       <button type='Submit'>Registrar</button>
+//      </form>
+
+//      <ul>
+//       { quant.map(quant => 
+//         (<li key={quant}>{quant}</li> ))} 
+      
+//      </ul>
+//     </div>
+   
+//   );
+// }
+
+// export default App;
+
+
+import  { useState, useEffect } from 'react';
 
 
 function App(){
+  const [input, setInput] = useState('');
+  const [tarefas, setTarefas] = useState([
+    'Pagar a conta de luz',
+    'Estudar React'
+    //aqui ele já começa o array com esse dados
+  ]);
 
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [idade, setIdade] = useState(0);
 
-  const [user,setUser] = useState ({});
-  //precisa criar outro useState para definir como começa o objeto ( se for um objeto) e para fazer a troca dos valores
+
+useEffect(()=>{
+  const tarefasStorage = localStorage.getItem('@tarefa');
+
+  if(tarefasStorage){
+    setTarefas(JSON.parse(tarefasStorage))
+  }
+
+}, []);
+
+
+useEffect(()=>{ 
+    localStorage.setItem('@tarefa', JSON.stringify(tarefas))
+}, [tarefas]);
 
 
 function handleRegister(e){
-  e.preventDefault();
+  
 
-  setUser({
-    nome: nome,
-    idade: idade,
-    email: email,
-  })
+  setTarefas([...tarefas, input]); //usa-se o spread operator ( os 3 pontinhos) para ele criar a lista, se não ele vai jogando tudo na mesma linha
+  setInput('');
+  e.preventDefault();
 }
 
 // o 'onSubmit' no form, é que chama a função para inseriros valores colocados nos inputs
@@ -29,34 +88,22 @@ function handleRegister(e){
       <form onSubmit={handleRegister}>
 
         <h1>Cadastrando usuário</h1>
-        <label>Nome:</label><br/>
-        <input placeholder='Digite seu nome'
-        value={nome}
-        onChange={ (e)=> setNome(e.target.value)  }
-        /><br/>
-
-        <label>Email:</label><br/>
-        <input placeholder='Digite seu email'
-        value={email}
-        onChange={ (e)=> setEmail(e.target.value)  }
-        /><br/>
-
-        <label>Idade:</label><br/>
-        <input placeholder='Digite sua idade'
-        value={idade}
-        onChange={ (e)=> setIdade(e.target.value)  }
+        <label>Nome da tarefa:</label><br/>
+        <input 
+        placeholder='digite uma tarefa'
+        value={input}
+        onChange={ (e)=> setInput(e.target.value)  }
         /><br/>
 
         <button type='sumit'>Registrar</button>
       </form><br/><br/>
 
-      <div>
-        <span>Bem vindo: {user.nome}</span><br/>
-        <span>Idade: {user.idade}</span><br/>
-        <span>Email: {user.email}</span>
-      </div>
+      <ul>
+       {tarefas.map(tarefa => (<li key={tarefa}>{tarefa}</li>))}
+       
+      </ul>
     
-    </div>
+    </div>//toda lista 'li' precisa uma uma 'key', ele usou a palavra 'tarefa'
    
   );
 }
